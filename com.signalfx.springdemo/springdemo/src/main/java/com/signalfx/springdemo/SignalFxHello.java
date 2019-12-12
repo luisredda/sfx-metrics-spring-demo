@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import java.io.IOException;
 import java.lang.String;
 import java.net.URL;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,11 +59,24 @@ final SfxMetrics metrics = new SfxMetrics(metricRegistry, metricMetadata);
 ///
 
         // Enviar o timestamp atual como um Gauge
-        metrics.registerGauge("sfx.teste.gaugetest", new Gauge<Long>() {
+        metrics.registerGauge("sfx.test.gaugetest", new Gauge<Long>() {
             public Long getValue() {
                 return System.currentTimeMillis();
             }
         });
+
+        // Enviar métrica com Dimensão
+
+        Long queueValue = 100L;
+
+        metrics.registerGauge("sfx.test.tamanho_fila", new Gauge<Long>() {
+            @Override
+            public Long getValue() {
+                return queueValue;
+            }
+        }, "nome_fila", "customer_backlog");
+
+
 
         return ("Métricas Realtime SignalFX enviadas!!!");
 
